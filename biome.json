@@ -9,5 +9,16 @@
 		"rules": {
 			"recommended": true
 		}
+	},
+	"formatter": {
+		"enabled": true,
+		"ignore": [
+			"**/node_modules/**",
+			"**/dist/**",
+			"**/build/**",
+			"**/pack/**",
+			"**/*.yml/**",
+			"**/*.yaml/**"
+		]
 	}
 }
