@@ -1,0 +1,20 @@
+name: Hello-Bye
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+    
+    # manual trigger
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Hello
+                run: echo "Hello World"
+            -   name: Bye
+                run: echo "Bye World"
+          
