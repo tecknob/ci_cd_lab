@@ -1,0 +1,17 @@
+name: Dump Github Context
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+jobs:
+    github-context-job:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Dump Github Context
+                run: echo '${{ toJSON(github) }}'
+            
+            -   name: Dump Github Actions Context
+                run: echo '${{ toJSON(github.event) }}'
