@@ -1,11 +1,11 @@
 name: Issue Comment
 
 on:
-    issue_comment:
-        types: [open]
+    issues:
+        types: [opened]
 
 jobs:
-    test-job:
+    comment-on-issue:
         runs-on: ubuntu-latest
         steps:
             -   name: Dump Github Context
