@@ -2,7 +2,7 @@ name: Issue Comment
 
 on:
     issue_comment:
-        types: [created]
+        types: [open]
 
 jobs:
     test-job:
