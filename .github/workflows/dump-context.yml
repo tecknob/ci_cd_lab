@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: Dump Github Context
-                run: echo '${{ toJSON(github) }}'
+                run: echo '${{ toJSON(github) }}' | jq
             
             -   name: Dump Github Actions Context
-                run: echo '${{ toJSON(github.event) }}'
+                run: echo '${{ toJSON(github.event) }}' | jq
