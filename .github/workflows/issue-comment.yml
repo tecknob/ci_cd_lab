@@ -1,0 +1,17 @@
+name: Issue Comment
+
+on:
+    issue_comment:
+        types: [created]
+
+jobs:
+    test-job:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Dump Github Context
+                run: echo '${{ toJSON(github) }}' | jq
+                shell: bash
+
+            -   name: Dump Github Actions Context
+                run: echo '${{ toJSON(github.event) }}' | jq
+                shell: bash
