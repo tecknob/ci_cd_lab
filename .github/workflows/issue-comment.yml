@@ -8,10 +8,15 @@ jobs:
     comment-on-issue:
         runs-on: ubuntu-latest
         steps:
-            -   name: Dump Github Context
-                run: echo '${{ toJSON(github) }}' | jq
-                shell: bash
+            -   name: Comment on issue
+                uses: peter-evans/create-or-update-comment@v4
+                with:
+                    token: ${{ secrets.REPO_SECRET }}
+                    issue-number: ${{ github.event.issue.number }}
+                    body: |
+                        Thank you for creating this issue.
+                        :smiley:
 
-            -   name: Dump Github Actions Context
-                run: echo '${{ toJSON(github.event) }}' | jq
-                shell: bash
+                    reactions: '+1'
+                
+
