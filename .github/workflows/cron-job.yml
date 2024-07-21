@@ -1,0 +1,13 @@
+name: Cron Job
+
+on:
+    schedule:
+        - cron: "0 0 * * *" # every hour
+    workflow_dispatch:
+
+jobs:
+    cron-job:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Current Server Time
+                run: echo $(date +%H:%M:%S)
