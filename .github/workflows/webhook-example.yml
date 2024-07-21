@@ -1,0 +1,15 @@
+name: Webhook Event Example
+
+on:
+  repository_dispatch:
+    types:
+     - webhook
+
+jobs:
+  response:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run a script
+        run: |
+          echo "Event of type: ${{github.event_name}}"
