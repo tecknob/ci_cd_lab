@@ -1,0 +1,26 @@
+name: Multi Event
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+jobs:
+    multi-event:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Basic Info
+                run: |
+                    echo "Event name: ${{ github.event_name }}"
+                    echo "Event action: ${{ github.event.action }}"
+                    echo "Event number: ${{ github.event.number }}"
+                    echo "Event repository: ${{ github.event.repository.name }}"
+                    echo "Event repository id: ${{ github.event.repository.id }}"
+                    echo "Event repository url: ${{ github.event.repository.url }}"
+                    echo "Event repository full name: ${{ github.event.repository.full_name }}"
+                    echo "REF: ${{ github.ref }}"
+                    echo "Job ID: ${{ github.job }}"
+                    echo "Action: ${{ github.action }}"
+                    echo "Actor: ${{ github.actor }}"
+                    
