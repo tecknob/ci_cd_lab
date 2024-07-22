@@ -17,7 +17,7 @@ jobs:
                 with:
                     github-token: ${{ secrets.REPO_SECRET }}
                     script: |
-                        const issueNumber = 75;
+                        const issueNumber = parseInt("${{ 75 }}", 10);
                         const issue = await github.rest.issues.get({
                             owner: context.repo.owner,
                             repo: context.repo.repo,
