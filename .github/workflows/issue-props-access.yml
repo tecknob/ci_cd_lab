@@ -28,13 +28,4 @@ jobs:
 
             -   name: Print issue details
                 run: |
-                    echo "Issue number: ${{ steps.get-issue-details.outputs.result.issue_number }}"
-                    echo "Issue title: ${{ steps.get-issue-details.outputs.result.title }}"
-                    echo "Issue body: ${{ steps.get-issue-details.outputs.result.body }}"
-                    echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
-                    echo "Issue assignees: ${{ steps.get-issue-details.outputs.result.assignees }}"
-                    echo "Issue milestone: ${{ steps.get-issue-details.outputs.result.milestone }}"
-                    echo "Issue state: ${{ steps.get-issue-details.outputs.result.state }}"
-                    echo "Issue created_at: ${{ steps.get-issue-details.outputs.result.created_at }}"
-                    echo "Issue updated_at: ${{ steps.get-issue-details.outputs.result.updated_at }}"
-                    echo "Issue closed_at: ${{ steps.get-issue-details.outputs.result.closed_at }}"
+                    echo "details: ${{ steps.get-issue-details }}
