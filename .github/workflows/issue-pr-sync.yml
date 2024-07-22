@@ -20,7 +20,7 @@ jobs:
 
       - name: Check if issue number is found
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
-        run: | 
+        run: |
           echo "Found issue number: ${{ steps.extract-issue.outputs.ISSUE_NUMBER }}"
 
       - name: Get issue details
@@ -41,24 +41,23 @@ jobs:
             const assignees = issue.data.assignees ? issue.data.assignees.map(assignee => assignee.login) : [];
             const milestone = issue.data.milestone ? issue.data.milestone.number : null;
             
-            // Projects data may require an additional API call to get the project cards
-            let projects = [];
-            try {
-              const projectCards = await github.rest.projects.listForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              });
-              projects = projectCards.data.map(project => project.id);
-            } catch (error) {
-              console.error('Failed to fetch projects:', error);
-            }
+            // Fetch project cards using issue events
+            const projectCards = await github.rest.issues.listEventsForTimeline({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
 
-            return JSON.stringify({
+            const projects = projectCards.data
+              .filter(event => event.event === 'added_to_project')
+              .map(event => event.project_card.project_id);
+
+            return {
               labels: labels,
               assignees: assignees,
               projects: projects,
               milestone: milestone
-            });
+            };
 
       - name: Apply labels to pull request
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
@@ -67,7 +66,7 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            const details = JSON.parse(`"${{ steps.get-issue-details.outputs.result }}"`);
             if (details.labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
@@ -84,7 +83,7 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            const details = JSON.parse(`"${{ steps.get-issue-details.outputs.result }}"`);
             if (details.assignees.length > 0) {
               await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
@@ -101,7 +100,7 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            const details = JSON.parse(`"${{ steps.get-issue-details.outputs.result }}"`);
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -116,7 +115,7 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            const details = JSON.parse(`"${{ steps.get-issue-details.outputs.result }}"`);
             for (const projectId of details.projects) {
               await github.rest.projects.createCard({
                 column_id: projectId,
