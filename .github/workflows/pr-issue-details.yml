@@ -1,0 +1,47 @@
+name: PR Issue Details
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
+
+jobs:
+  pr-issue-details:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract issue number from PR
+        id: extract-issue
+        run: |
+          issue_number=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+' | head -1)
+          echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
+
+      - name: Get issue details
+        if: env.ISSUE_NUMBER
+        id: get-issue-details
+        env:
+          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = parseInt(process.env.ISSUE_NUMBER);
+            const issue = await github.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number
+            });
+            return issue;
+
+      - name: Print issue details
+        if: steps.get-issue-details.outputs.result
+        run: |
+          echo "Issue details: ${{ steps.get-issue-details.outputs.result }}"
+          
+      - name: Print issue labels
+        if: steps.get-issue-details.outputs.result
+        run: |
+          echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
