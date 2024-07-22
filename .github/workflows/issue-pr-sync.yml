@@ -30,18 +30,24 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            const issueNumber = ${{ steps.extract-issue.outputs.ISSUE_NUMBER }};
+            const issueNumber = parseInt("${{ steps.extract-issue.outputs.ISSUE_NUMBER }}", 10);
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber
             });
-            const labels = issue.data.labels.map(label => label.name);
-            const reviewers = issue.data.requested_reviewers.map(reviewer => reviewer.login);
-            const assignees = issue.data.assignees.map(assignee => assignee.login);
-            const projects = issue.data.project_cards.map(project => project.project_id);
+
+            const labels = issue.data.labels ? issue.data.labels.map(label => label.name) : [];
+            const assignees = issue.data.assignees ? issue.data.assignees.map(assignee => assignee.login) : [];
+            const projects = issue.data.project_cards ? issue.data.project_cards.map(project => project.project_id) : [];
             const milestone = issue.data.milestone ? issue.data.milestone.number : null;
-            return { labels, reviewers, assignees, projects, milestone };
+
+            return {
+              labels: labels,
+              assignees: assignees,
+              projects: projects,
+              milestone: milestone
+            };
 
       - name: Apply labels to pull request
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
