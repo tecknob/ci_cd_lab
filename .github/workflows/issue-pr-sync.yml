@@ -60,6 +60,12 @@ jobs:
             });
 
             core.setOutput('result', result);
+            console.log('Issue details:', result);
+
+      - name: Debug issue details output
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        run: |
+          echo "Issue details result: ${{ steps.get-issue-details.outputs.result }}"
 
       - name: Apply labels to pull request
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
