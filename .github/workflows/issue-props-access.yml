@@ -1,37 +1,40 @@
 name: Issue Properties
 
 on:
-    # manual trigger
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-    issue-props:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
-            
-            - name: Get issue details
-              id: get-issue-details
-              uses: actions/github-script@v6
-              with:
-                github-token: ${{ secrets.REPO_SECRET }}
-                script: |
-                  const issueNumber = parseInt("${{ 75 }}", 10);
-                  const issue = await github.rest.issues.get({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: issueNumber
-                  });
+  issue-props:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Get issue details
+        id: get-issue-details
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const issueNumber = 75;  // Replace 75 with the actual issue number you want to fetch
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
 
-                  return issue.data;
+            core.setOutput('issue_number', issue.data.number);
+            core.setOutput('title', issue.data.title);
+            core.setOutput('body', issue.data.body);
+            core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
+            core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
+            core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
 
-            - name: Print issue details
-              if: steps.get-issue-details.outputs.result != ''
-              run: |
-                  echo "Issue number: ${{ steps.get-issue-details.outputs.result.issue_number }}"
-                  echo "Issue title: ${{ steps.get-issue-details.outputs.result.title }}"
-                  echo "Issue body: ${{ steps.get-issue-details.outputs.result.body }}"
-                  echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
-                  echo "Issue assignees: ${{ steps.get-issue-details.outputs.result.assignees }}"
-                  echo "Issue milestone: ${{ steps.get-issue-details.outputs.result.milestone }}"
+      - name: Print issue details
+        run: |
+          echo "Issue number: ${{ steps.get-issue-details.outputs.issue_number }}"
+          echo "Issue title: ${{ steps.get-issue-details.outputs.title }}"
+          echo "Issue body: ${{ steps.get-issue-details.outputs.body }}"
+          echo "Issue labels: ${{ steps.get-issue-details.outputs.labels }}"
+          echo "Issue assignees: ${{ steps.get-issue-details.outputs.assignees }}"
+          echo "Issue milestone: ${{ steps.get-issue-details.outputs.milestone }}"
