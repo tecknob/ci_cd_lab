@@ -16,4 +16,4 @@ jobs:
                   echo "Workflow Event:  $WORKFLOW_EVENT"
               env:
                   WORKFLOW_ACTION: ${{ github.action }}
-                  WORKFLOW_EVENT: ${{ github.event }}
+                  WORKFLOW_EVENT: ${{ github.event_name }}
