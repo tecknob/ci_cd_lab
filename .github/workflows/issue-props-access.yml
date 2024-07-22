@@ -19,29 +19,22 @@ jobs:
                     script: |
                         const issueNumber = 75;
                         const issue = await github.rest.issues.get({
-                            ...context.repo,
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
                             issue_number: issueNumber
                         });
+
                         return issue.data;
 
-            -   name: Print issue props
-                if: steps.get-issue-details.outcome
-                id: print-issue
-                env:
-                    ISSUE_NUMBER: ${{ steps.get-issue-details.outcome.issue_number }}
-                    ISSUE_TITLE: ${{ steps.get-issue-details.outcome.title }}
-                    ISSUE_STATE: ${{ steps.get-issue-details.outcome.state }}
-                    ISSUE_BODY: ${{ steps.get-issue-details.outcome.body }}
-                    ISSUE_URL: ${{ steps.get-issue-details.outcome.html_url }}
-                    ISSUE_LABELS: ${{ steps.get-issue-details.outcome.labels }}
-                    ISSUE_ASSIGNEES: ${{ steps.get-issue-details.outcome.assignees }}
-                    ISSUE_MILESTONE: ${{ steps.get-issue-details.outcome.milestone }}
+            -   name: Print issue details
                 run: |
-                    echo "Issue number: $ISSUE_NUMBER"
-                    echo "Issue title: $ISSUE_TITLE"
-                    echo "Issue state: $ISSUE_STATE"
-                    echo "Issue body: $ISSUE_BODY"
-                    echo "Issue url: $ISSUE_URL"
-                    echo "Issue labels: $ISSUE_LABELS"
-                    echo "Issue assignees: $ISSUE_ASSIGNEES"
-                    echo "Issue milestone: $ISSUE_MILESTONE"
+                    echo "Issue number: ${{ steps.get-issue-details.outputs.result.issue_number }}"
+                    echo "Issue title: ${{ steps.get-issue-details.outputs.result.title }}"
+                    echo "Issue body: ${{ steps.get-issue-details.outputs.result.body }}"
+                    echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
+                    echo "Issue assignees: ${{ steps.get-issue-details.outputs.result.assignees }}"
+                    echo "Issue milestone: ${{ steps.get-issue-details.outputs.result.milestone }}"
+                    echo "Issue state: ${{ steps.get-issue-details.outputs.result.state }}"
+                    echo "Issue created_at: ${{ steps.get-issue-details.outputs.result.created_at }}"
+                    echo "Issue updated_at: ${{ steps.get-issue-details.outputs.result.updated_at }}"
+                    echo "Issue closed_at: ${{ steps.get-issue-details.outputs.result.closed_at }}"
