@@ -2,7 +2,7 @@ name: PR Issue Number
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
     branches:
       - main
 
@@ -10,16 +10,21 @@ jobs:
   pr-issue-number:
     runs-on: ubuntu-latest
 
-      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract issue number from PR - Print
+      - name: Extract issue number from PR
+        id: extract-issue
         run: |
-            issue_number=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
-            echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
+          issue_number=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+' | head -1)
+          echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
 
       - name: Print issue number
+        if: env.ISSUE_NUMBER
+        id: print-issue
+        env:
+          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
         run: |
-            echo "Issue number: ${{ env.ISSUE_NUMBER }}"
+          echo "Issue number: $ISSUE_NUMBER"
+
