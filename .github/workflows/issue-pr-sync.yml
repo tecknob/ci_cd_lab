@@ -39,15 +39,26 @@ jobs:
 
             const labels = issue.data.labels ? issue.data.labels.map(label => label.name) : [];
             const assignees = issue.data.assignees ? issue.data.assignees.map(assignee => assignee.login) : [];
-            const projects = issue.data.project_cards ? issue.data.project_cards.map(project => project.project_id) : [];
             const milestone = issue.data.milestone ? issue.data.milestone.number : null;
+            
+            // Projects data may require an additional API call to get the project cards
+            let projects = [];
+            try {
+              const projectCards = await github.rest.projects.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+              projects = projectCards.data.map(project => project.id);
+            } catch (error) {
+              console.error('Failed to fetch projects:', error);
+            }
 
-            return {
+            return JSON.stringify({
               labels: labels,
               assignees: assignees,
               projects: projects,
               milestone: milestone
-            };
+            });
 
       - name: Apply labels to pull request
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
@@ -56,13 +67,13 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const labels = ${{ steps.get-issue-details.outputs.result.labels }};
-            if (labels.length > 0) {
+            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            if (details.labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                labels: labels
+                labels: details.labels
               });
             }
 
@@ -73,13 +84,13 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const assignees = ${{ steps.get-issue-details.outputs.result.assignees }};
-            if (assignees.length > 0) {
+            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            if (details.assignees.length > 0) {
               await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                assignees: assignees
+                assignees: details.assignees
               });
             }
 
@@ -90,12 +101,12 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const milestone = ${{ steps.get-issue-details.outputs.result.milestone }};
+            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              milestone: milestone
+              milestone: details.milestone
             });
 
       - name: Add projects to pull request
@@ -105,8 +116,8 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const projects = ${{ steps.get-issue-details.outputs.result.projects }};
-            for (const projectId of projects) {
+            const details = JSON.parse('${{ steps.get-issue-details.outputs.result }}');
+            for (const projectId of details.projects) {
               await github.rest.projects.createCard({
                 column_id: projectId,
                 content_id: prNumber,
