@@ -20,7 +20,7 @@ jobs:
 
       - name: Check if issue number is found
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
-        run: | 
+        run: |
           echo "Found issue number: ${{ steps.extract-issue.outputs.ISSUE_NUMBER }}"
 
       - name: Get issue details
@@ -54,13 +54,13 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const labels = ${{ steps.get-issue-details.outputs.result.labels }};
-            if (labels.length > 0) {
+            const details = ${{ steps.get-issue-details.outputs.result }};
+            if (details.labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                labels: labels
+                labels: details.labels
               });
             }
 
@@ -71,13 +71,13 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const assignees = ${{ steps.get-issue-details.outputs.result.assignees }};
-            if (assignees.length > 0) {
+            const details = ${{ steps.get-issue-details.outputs.result }};
+            if (details.assignees.length > 0) {
               await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                assignees: assignees
+                assignees: details.assignees
               });
             }
 
@@ -88,11 +88,10 @@ jobs:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
             const prNumber = context.issue.number;
-            const milestone = ${{ steps.get-issue-details.outputs.result.milestone }};
+            const details = ${{ steps.get-issue-details.outputs.result }};
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              milestone: milestone
+              milestone: details.milestone
             });
-
