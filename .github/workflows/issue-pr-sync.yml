@@ -1,0 +1,109 @@
+name: Apply Issue Details to Pull Request
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  apply-details:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract issue number
+        id: extract-issue
+        run: |
+          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.title }} ${{ github.event.pull_request.body }}" | grep -oE '#[0-9]+' | head -n 1 | tr -d '#')
+          echo "::set-output name=ISSUE_NUMBER::$ISSUE_NUMBER"
+
+      - name: Check if issue number is found
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        run: | 
+          echo "Found issue number: ${{ steps.extract-issue.outputs.ISSUE_NUMBER }}"
+
+      - name: Get issue details
+        id: get-issue-details
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const issueNumber = ${{ steps.extract-issue.outputs.ISSUE_NUMBER }};
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
+            const labels = issue.data.labels.map(label => label.name);
+            const reviewers = issue.data.requested_reviewers.map(reviewer => reviewer.login);
+            const assignees = issue.data.assignees.map(assignee => assignee.login);
+            const projects = issue.data.project_cards.map(project => project.project_id);
+            const milestone = issue.data.milestone ? issue.data.milestone.number : null;
+            return { labels, reviewers, assignees, projects, milestone };
+
+      - name: Apply labels to pull request
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const prNumber = context.issue.number;
+            const labels = ${{ steps.get-issue-details.outputs.result.labels }};
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: labels
+              });
+            }
+
+      - name: Add assignees to pull request
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const prNumber = context.issue.number;
+            const assignees = ${{ steps.get-issue-details.outputs.result.assignees }};
+            if (assignees.length > 0) {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                assignees: assignees
+              });
+            }
+
+      - name: Add milestone to pull request
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != '' && steps.get-issue-details.outputs.result.milestone != null
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const prNumber = context.issue.number;
+            const milestone = ${{ steps.get-issue-details.outputs.result.milestone }};
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              milestone: milestone
+            });
+
+      - name: Add projects to pull request
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != '' && steps.get-issue-details.outputs.result.projects.length > 0
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const prNumber = context.issue.number;
+            const projects = ${{ steps.get-issue-details.outputs.result.projects }};
+            for (const projectId of projects) {
+              await github.rest.projects.createCard({
+                column_id: projectId,
+                content_id: prNumber,
+                content_type: 'PullRequest'
+              });
+            }
