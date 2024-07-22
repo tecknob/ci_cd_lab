@@ -1,47 +1,58 @@
-name: PR Issue Details
+name: Apply Issue Labels to Pull Request
 
 on:
   pull_request:
-    types: [opened, reopened]
-    branches:
-      - main
+    types: [opened]
 
 jobs:
-  pr-issue-details:
+  apply-labels:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Extract issue number from PR
+      - name: Extract issue number
         id: extract-issue
         run: |
-          issue_number=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+' | head -1)
-          echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
+          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.title }} ${{ github.event.pull_request.body }}" | grep -oE '#[0-9]+' | head -n 1 | tr -d '#')
+          echo "::set-output name=ISSUE_NUMBER::$ISSUE_NUMBER"
 
-      - name: Get issue details
-        env:
-          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
-        if: env.ISSUE_NUMBER
-        id: get-issue-details
+      - name: Check if issue number is found
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        run: | 
+         echo "Found issue number: ${{ steps.extract-issue.outputs.ISSUE_NUMBER }}"
+ 
+      - name: Get labels from issue
+        id: get-labels
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            const issue_number = parseInt(process.env.ISSUE_NUMBER);
+            const issueNumber = ${{ steps.extract-issue.outputs.ISSUE_NUMBER }};
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issue_number
+              issue_number: issueNumber
             });
-            return issue.data;
+            return issue.data.labels.map(label => label.name);
 
-      - name: Print issue details
-        if: steps.get-issue-details.outputs.result
-        run: |
-          echo "Issue details: ${{ steps.get-issue-details.outputs.result }}"
-          
-      - name: Print issue labels
-        if: steps.get-issue-details.outputs.result
-        run: |
-          echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
+      - name: Apply labels to pull request
+        if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_SECRET }}
+          script: |
+            const prNumber = context.issue.number;
+            const labels = ${{ steps.get-labels.outputs.result }};
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: labels
+              });
+            }
+
+
