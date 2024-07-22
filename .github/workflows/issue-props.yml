@@ -1,0 +1,33 @@
+name: Issue Properties
+
+on:
+    # manual trigger
+    workflow_dispatch:
+
+jobs:
+    issue-props:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get issue details
+              id: get-issue-details
+              uses: actions/github-script@v6
+              with:
+                github-token: ${{ secrets.REPO_SECRET }}
+                script: |
+                  const issueNumber = parseInt("${{ 75 }}", 10);
+                  const issue = await github.rest.issues.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber
+                  });
+
+                  return issue.data;
+
+            - name: Print issue details
+              run: |
+                  echo "Issue number: ${{ steps.get-issue-details.outputs.result.issue_number }}"
+                  echo "Issue title: ${{ steps.get-issue-details.outputs.result.title }}"
+                  echo "Issue body: ${{ steps.get-issue-details.outputs.result.body }}"
+                  echo "Issue labels: ${{ steps.get-issue-details.outputs.result.labels }}"
+                  echo "Issue assignees: ${{ steps.get-issue-details.outputs.result.assignees }}"
+                  echo "Issue milestone: ${{ steps.get-issue-details.outputs.result.milestone }}"
