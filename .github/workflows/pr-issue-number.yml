@@ -10,12 +10,18 @@ jobs:
   pr-issue-number:
     runs-on: ubuntu-latest
 
+    env:
+      ISSUE_NUMBER:
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Extract issue number from PR
+      - name: Extract issue number from PR - Print
         run: |
-            echo "Issue number: $ISSUE_NUMBER"
-        env:
-            ISSUE_NUMBER: $(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
+            issue_number=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')"
+            echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
+
+      - name: Print issue number
+        run: |
+            echo "Issue number: ${{ env.ISSUE_NUMBER }}"
