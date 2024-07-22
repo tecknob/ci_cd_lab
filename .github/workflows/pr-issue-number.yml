@@ -1,0 +1,30 @@
+name: PR Issue Number
+
+on:
+    pull_request:
+        types: [opened]
+        branches:
+            - main
+
+jobs:
+    pr-issue-number:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: PR Issue Number
+                run: |
+                    echo "PR number: ${{ github.event.number }}"
+                    echo "PR repository: ${{ github.event.repository.name }}"
+                    echo "PR repository id: ${{ github.event.repository.id }}"
+                    echo "PR repository url: ${{ github.event.repository.url }}"
+                    echo "PR repository full name: ${{ github.event.repository.full_name }}"
+                    echo "PR REF: ${{ github.ref }}"
+                    echo "Job ID: ${{ github.job }}"
+                    echo "Action: ${{ github.action }}"
+                    echo "Actor: ${{ github.actor }}"
+                    echo "Event name: ${{ github.event_name }}"
+                    echo "Event action: ${{ github.event.action }}"
+
+            -   name: Check Issue Number in PR title or body
+                run: |
+                    echo "PR title: ${{ github.event.pull_request.title }}"
+                    echo "PR body: ${{ github.event.pull_request.body }}"
