@@ -1,44 +1,44 @@
 name: PR Issue Number
 
 on:
-    pull_request:
-        types: [opened]
-        branches:
-            - main
+  pull_request:
+    types: [opened]
+    branches:
+      - main
 
 jobs:
-    pr-issue-number:
-        runs-on: ubuntu-latest
-        steps:
-            -   name: PR Issue Number
-                run: |
-                    echo "PR number: ${{ github.event.number }}"
-                    echo "PR repository: ${{ github.event.repository.name }}"
-                    echo "PR repository id: ${{ github.event.repository.id }}"
-                    echo "PR repository url: ${{ github.event.repository.url }}"
-                    echo "PR repository full name: ${{ github.event.repository.full_name }}"
-                    echo "PR REF: ${{ github.ref }}"
-                    echo "Job ID: ${{ github.job }}"
-                    echo "Action: ${{ github.action }}"
-                    echo "Actor: ${{ github.actor }}"
-                    echo "Event name: ${{ github.event_name }}"
-                    echo "Event action: ${{ github.event.action }}"
+  pr-issue-number:
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Issue Number
+        run: |
+          echo "PR number: ${{ github.event.number }}"
+          echo "PR repository: ${{ github.event.repository.name }}"
+          echo "PR repository id: ${{ github.event.repository.id }}"
+          echo "PR repository url: ${{ github.event.repository.url }}"
+          echo "PR repository full name: ${{ github.event.repository.full_name }}"
+          echo "PR REF: ${{ github.ref }}"
+          echo "Job ID: ${{ github.job }}"
+          echo "Action: ${{ github.action }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action }}"
 
-            -   name: Check Issue Number in PR title or body
-                run: |
-                    echo "PR title: ${{ github.event.pull_request.title }}"
-                    echo "PR body: ${{ github.event.pull_request.body }}"
+      - name: Check Issue Number in PR title or body
+        run: |
+          echo "PR title: ${{ github.event.pull_request.title }}"
+          echo "PR body: ${{ github.event.pull_request.body }}"
 
-            -   name: Checkout repository
-                uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-            -   name: Extract issue number from PR
-                id: extract-issue
-                run: |
-                  ISSUE_NUMBER=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
-                  echo "ISSUE_NUMBER=${ISSUE_NUMBER}" >> $GITHUB_ENV
+      - name: Extract issue number from PR
+        id: extract-issue
+        run: |
+          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}" | grep -oP '(?<=#)\d+')
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_ENV
+        shell: bash
 
-            -   name: Print issue number
-                if: steps.extract-issue.outputs.ISSUE_NUMBER
-                run: |
-                  echo "Issue number: $ISSUE_NUMBER"
+      - name: Print issue number
+        run: |
+          echo "Issue number: ${{ env.issue_number }}"
