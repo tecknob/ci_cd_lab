@@ -1,0 +1,19 @@
+name: Env Var Example
+
+on:
+    push:
+    # manual trigger
+    workflow_dispatch:
+
+
+jobs:
+    set-and-use-env-var:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set env var
+              run: |
+                  echo "Workflow Action:  $WORKFLOW_ACTION"
+                  echo "Workflow Event:  $WORKFLOW_EVENT"
+              env:
+                  WORKFLOW_ACTION: ${{ github.action }}
+                  WORKFLOW_EVENT: ${{ github.event }}
