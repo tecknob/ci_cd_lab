@@ -63,18 +63,18 @@ jobs:
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.REPO_SECRET }}
-          script: |
-            const prNumber = context.issue.number;
-            const details = JSON.parse(`"${{ steps.get-issue-details.outputs.result }}"`);
-            if (details.labels.length > 0) {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                labels: details.labels
-              });
-            }
+         github-token: ${{ secrets.REPO_SECRET }}
+         script: |
+          const prNumber = context.issue.number;
+          const details = JSON.parse(${{ steps.get-issue-details.outputs.result }});
+          if (details.labels.length > 0) {
+            await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: prNumber,
+            labels: details.labels
+            });
+          }
 
       - name: Add assignees to pull request
         if: steps.extract-issue.outputs.ISSUE_NUMBER != ''
