@@ -21,20 +21,20 @@ jobs:
           echo "ISSUE_NUMBER=${issue_number}" >> $GITHUB_ENV
 
       - name: Get issue details
-        if: env.ISSUE_NUMBER
-        id: get-issue-details
         env:
           ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+        if: env.ISSUE_NUMBER
+        id: get-issue-details
         uses: actions/github-script@v6
         with:
           script: |
             const issue_number = parseInt(process.env.ISSUE_NUMBER);
-            const issue = await github.issues.get({
+            const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue_number
             });
-            return issue;
+            return issue.data;
 
       - name: Print issue details
         if: steps.get-issue-details.outputs.result
