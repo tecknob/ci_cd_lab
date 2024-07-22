@@ -8,6 +8,9 @@ jobs:
     access-issue-props:
         runs-on: ubuntu-latest
         steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v3
+
             -   name: Access issue props
                 id: get-issue-details
                 uses: actions/github-script@v6
@@ -22,7 +25,7 @@ jobs:
                         return issue.data;
 
             -   name: Print issue props
-                if: steps.get-issue-details.outcome == 'success'
+                if: steps.get-issue-details.outcome
                 id: print-issue
                 env:
                     ISSUE_NUMBER: ${{ steps.get-issue-details.outcome.issue_number }}
