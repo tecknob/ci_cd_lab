@@ -23,17 +23,14 @@ jobs:
               issue_number: issueNumber
             });
 
+            console.log('issue.data: ', issue.data);
+
             core.setOutput('issue_number', issue.data.number);
             core.setOutput('title', issue.data.title);
             core.setOutput('body', issue.data.body);
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
-            core.setOutput('projects', issue.data.projects ? issue.data.projects.map(project => project.title).join(', ') : '');
-
-            issue.data.projects.forEach(project => {
-              console.log(`Project: ${project.title}`);
-            });
 
       - name: Dump issue details
         run: |
