@@ -38,6 +38,10 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
+            <script type="module">
+              import { Octokit } from "https://esm.sh/@octokit/core";
+            </script>
+          
             const octokit = new Octokit({
               auth: secrets.REPO_SECRET
             });
