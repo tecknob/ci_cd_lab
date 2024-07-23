@@ -16,7 +16,6 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            const core = require('@actions/core');
             const issueNumber = 75;  // Replace 75 with the actual issue number you want to fetch
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
@@ -30,13 +29,13 @@ jobs:
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
-
-            return issue.data;
+            core.setOutput('projects', issue.data.projects.map(project => project.name).join(', '));
 
       - name: Dump issue details
         run: |
-          echo "Dumped issue details: ${{ toJSON(steps.get-issue-details.outputs) }}"
-          echo "Dumped issue details.outputs: ${{ steps.get-issue-details.outputs }}"
+          echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
+          echo "Dumped issue details.outputs: ${{ toJSON(steps.get-issue-details.outputs) }}"
+
 
       - name: Print issue details
         run: |
@@ -46,3 +45,4 @@ jobs:
           echo "Issue labels: ${{ steps.get-issue-details.outputs.labels }}"
           echo "Issue assignees: ${{ steps.get-issue-details.outputs.assignees }}"
           echo "Issue milestone: ${{ steps.get-issue-details.outputs.milestone }}"
+
