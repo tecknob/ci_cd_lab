@@ -29,7 +29,7 @@ jobs:
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
-            
+            core.setOutput('data', issue.data ? toJSON(issue.data) : '');
 
       - name: Dump issue details
         run: |
@@ -45,4 +45,3 @@ jobs:
           echo "Issue labels: ${{ steps.get-issue-details.outputs.labels }}"
           echo "Issue assignees: ${{ steps.get-issue-details.outputs.assignees }}"
           echo "Issue milestone: ${{ steps.get-issue-details.outputs.milestone }}"
-
