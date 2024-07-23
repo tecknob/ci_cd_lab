@@ -32,20 +32,28 @@ jobs:
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
 
-      - name: Get project cards
-        id: get-project-cards
+      - name: Get projects
+        id: get-projects
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            const issueNumber = 75;  
-            const issueUrl = `https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/issues/${issueNumber}`;
-            const projectCards = await github.rest.projects.listCards({
-              issue_url: issueUrl
+            const octokit = new Octokit({
+              auth: secrets.REPO_SECRET
             });
 
-            core.setOutput('project_cards', projectCards.data.map(card => card.note).join(', '));
-            
+            const projects = await octokit.request('GET /repos/{owner}/{repo}/projects', {
+              owner: context.repo.owner,
+              repo: context.repo.repo
+              headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+              }
+            });
+            })
+
+            console.log('projects: ', projects);
+            console.log('projects.data: ', projects.data);
+
       - name: Dump issue details
         run: |
           echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
