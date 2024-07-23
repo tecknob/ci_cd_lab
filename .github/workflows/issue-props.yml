@@ -47,7 +47,6 @@ jobs:
           echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
           echo "Dumped issue details.outputs: ${{ toJSON(steps.get-issue-details.outputs) }}"
 
-
       - name: Print issue details
         run: |
           echo "Issue number: ${{ steps.get-issue-details.outputs.issue_number }}"
