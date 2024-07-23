@@ -29,7 +29,11 @@ jobs:
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
-            core.setOutput('projects', issue.data.projects.map(project => project.name).join(', '));
+            core.setOutput('projects', issue.data.projects ? issue.data.projects.map(project => project.title).join(', ') : '');
+
+            issue.data.projects.forEach(project => {
+              console.log(`Project: ${project.title}`);
+            });
 
       - name: Dump issue details
         run: |
