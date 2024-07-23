@@ -9,13 +9,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Dump Github Context
-        run: echo '${{ toJSON(github) }}' | jq
       
       - name: Get issue details
         id: get-issue-details
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
@@ -32,12 +29,13 @@ jobs:
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
+            core.setOutput('result', issue.data);
+            core.setOutput('issue', issue);
 
       - name: Dump issue details
         run: |
           echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
           echo "Dumped issue details.outputs: ${{ toJSON(steps.get-issue-details.outputs) }}"
-          echo "Dumped issue details.outputs.result: ${{ toJSON(steps.get-issue-details.outputs.result) }}"
 
 
       - name: Print issue details
@@ -48,3 +46,4 @@ jobs:
           echo "Issue labels: ${{ steps.get-issue-details.outputs.labels }}"
           echo "Issue assignees: ${{ steps.get-issue-details.outputs.assignees }}"
           echo "Issue milestone: ${{ steps.get-issue-details.outputs.milestone }}"
+
