@@ -29,7 +29,7 @@ jobs:
             core.setOutput('labels', issue.data.labels.map(label => label.name).join(', '));
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
-            core.setOutput('data', issue.data || null);
+            
 
       - name: Dump issue details
         run: |
