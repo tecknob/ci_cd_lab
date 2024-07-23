@@ -30,6 +30,12 @@ jobs:
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
 
+      - name: Dump issue details
+        run: |
+          echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
+          echo "Dumped issue details.outputs: ${{ toJSON(steps.get-issue-details.outputs) }}"
+
+
       - name: Print issue details
         run: |
           echo "Issue number: ${{ steps.get-issue-details.outputs.issue_number }}"
