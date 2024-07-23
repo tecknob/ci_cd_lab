@@ -63,6 +63,7 @@ jobs:
 
 
       - name: Print issue details
+        id: print-issue-details
         run: |
           echo "Issue number: ${{ steps.get-issue-details.outputs.issue_number }}"
           echo "Issue title: ${{ steps.get-issue-details.outputs.title }}"
