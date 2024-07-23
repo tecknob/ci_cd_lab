@@ -38,7 +38,7 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            import { Octokit } from "@octokit/core";
+            const { Octokit } = require("@octokit/core");
           
             const octokit = new Octokit({
               auth: secrets.REPO_SECRET
