@@ -48,6 +48,7 @@ jobs:
 
             core.setOutput('projects', JSON.stringify(projects.data));
 
+
       - name: Dump issue details
         run: |
           echo "Dumped issue details: ${{ toJSON(steps.get-issue-details) }}"
@@ -55,7 +56,6 @@ jobs:
 
 
       - name: Print issue details
-        id: print-issue-details
         run: |
           echo "Issue number: ${{ steps.get-issue-details.outputs.issue_number }}"
           echo "Issue title: ${{ steps.get-issue-details.outputs.title }}"
