@@ -38,23 +38,15 @@ jobs:
         with:
           github-token: ${{ secrets.REPO_SECRET }}
           script: |
-            import { Octokit } from "@octokit/core";
-          
-            const octokit = new Octokit({
-              auth: secrets.REPO_SECRET
+            const projects = await github.rest.projects.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo
             });
-
-            const projects = await octokit.request('GET /repos/{owner}/{repo}/projects', {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                headers: {
-                  'X-GitHub-Api-Version': '2022-11-28'
-                }
-            });
-      
 
             console.log('projects: ', projects);
             console.log('projects.data: ', projects.data);
+
+            core.setOutput('projects', JSON.stringify(projects.data));
 
       - name: Dump issue details
         run: |

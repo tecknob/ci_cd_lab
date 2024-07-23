@@ -12,8 +12,5 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^1.8.3"
-  },
-  "dependencies": {
-    "@octokit/core": "^6.1.2"
   }
 }
