@@ -30,7 +30,7 @@ jobs:
             core.setOutput('assignees', issue.data.assignees.map(assignee => assignee.login).join(', '));
             core.setOutput('milestone', issue.data.milestone ? issue.data.milestone.title : '');
 
-            return issue.data;
+            return toJSON(issue.data);
 
       - name: Dump issue details
         run: |
