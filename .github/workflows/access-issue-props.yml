@@ -18,8 +18,8 @@ jobs:
       - name: Set issue number
         id: set-issue-number
         run: |
-          ISSUE_NUMBER=75          
-          echo "ISSUE_NUMBER=${ISSUE_NUMBER}" >> $GITHUB_ENV
+          ISSUE_NUMBER=$(echo "${{ github.event.pull_request.title }} ${{ github.event.pull_request.body }}" | grep -oE '#[0-9]+' | head -n 1 | tr -d '#')            
+          echo "ISSUE_NUMBER=$ISSUE_NUMBER" >> $GITHUB_ENV
 
       - name: Get an issue by number and set issue as output
         if: env.ISSUE_NUMBER 
