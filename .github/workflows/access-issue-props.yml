@@ -24,13 +24,11 @@ jobs:
             OWNER: ${{ github.repository_owner }}
             REPO: ${{ github.event.repository.name }}
         run: |
-            ISSUE=$(curl -L \
-                -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer ${{ secrets.REPO_SECRET }}" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
-            )
-            echo "ISSUE=$(echo $ISSUE | jq -c .)" >> $GITHUB_ENV
+            ../scripts/get-issue.sh \
+                ${{secrets.REPO_SECRET}} \
+                $OWNER \
+                $REPO \
+                $ISSUE_NUMBER
 
       - name: Process issue with JavaScript
         if: env.ISSUE
