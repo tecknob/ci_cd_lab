@@ -10,6 +10,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Print working directory
+        run: pwd
+
+      - name: List files in the root directory
+        run: ls -l
+
+      - name: List files in scripts directory
+        run: ls -l ../scripts
+
+      - name: Make script executable
+        run: chmod +x ../scripts/get-issue.sh
+
       - name: Set issue number
         id: set-issue-number
         run: |
@@ -29,7 +41,7 @@ jobs:
                 $OWNER \
                 $REPO \
                 $ISSUE_NUMBER
-                
+
       - name: Process issue with JavaScript
         if: env.ISSUE
         id: process-issue
@@ -41,4 +53,4 @@ jobs:
             script: |
                 const issue = JSON.parse(process.env.ISSUE);
                 console.log(issue);
-            
+
