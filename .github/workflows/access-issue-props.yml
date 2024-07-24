@@ -3,8 +3,6 @@ name: Access Issue Properties
 on:
   pull_request:
     types: [opened]
-    branches:
-      - main
   # manual trigger
   workflow_dispatch:
 
