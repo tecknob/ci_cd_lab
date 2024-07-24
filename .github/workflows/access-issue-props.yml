@@ -37,5 +37,5 @@ jobs:
 
       - name: Dump issue data
         run: |
-          echo "Issue data: ${{ steps.issue.outputs.data }}"
+          echo "Issue data: ${{ steps.issue.outputs }}"
 
