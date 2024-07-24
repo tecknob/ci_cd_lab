@@ -31,9 +31,5 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
           )
-          
-          echo "data=$ISSUE" >> $GITHUB_OUTPUT
-
-      - name: Dump issue data
-        run: |
-          echo "Issue data: ${{ steps.issue.outputs.data }}"
+          echo "Issue: $ISSUE"
+          echo "ISSUE=${ISSUE}" >> $GITHUB_OUTPUT
