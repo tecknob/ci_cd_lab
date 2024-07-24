@@ -32,12 +32,13 @@ jobs:
             https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
           )
           
-          # Set issue as output
-          echo "ISSUE_DATA=${Issue}" >> $GITHUB_ENV
-          echo "ISSUE_DATA=${Issue}" >> $GITHUB_OUTPUT
+          echo "::set-output name=issue::$Issue"
 
-      - name: Dump ISSUE_DATA
-        if: env.ISSUE_DATA
-        env:
-          ISSUE_DATA: ${{ env.ISSUE_DATA }}
-        run: echo $ISSUE_DATA | jq 
+      - name: Print issue details
+        run: |
+          echo "Issue number: ${{ steps.issue.outputs.number }}"
+          echo "Issue title: ${{ steps.issue.outputs.title }}"
+          echo "Issue body: ${{ steps.issue.outputs.body }}"
+          echo "Issue labels: ${{ steps.issue.outputs.labels }}"
+          echo "Issue assignees: ${{ steps.issue.outputs.assignees }}"
+          echo "Issue milestone: ${{ steps.issue.outputs.milestone }}"
