@@ -29,7 +29,7 @@ jobs:
                 $OWNER \
                 $REPO \
                 $ISSUE_NUMBER
-
+                
       - name: Process issue with JavaScript
         if: env.ISSUE
         id: process-issue
@@ -42,4 +42,3 @@ jobs:
                 const issue = JSON.parse(process.env.ISSUE);
                 console.log(issue);
             
-     
