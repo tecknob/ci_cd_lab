@@ -20,16 +20,16 @@ jobs:
         if: env.ISSUE_NUMBER 
         id: issue
         env:
-          ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
-          OWNER: ${{ github.repository_owner }}
-          REPO: ${{ github.event.repository.name }}
+            ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+            OWNER: ${{ github.repository_owner }}
+            REPO: ${{ github.event.repository.name }}
         run: |
-          ISSUE=$(
-           curl -L \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.REPO_SECRET}}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
-          )
-          echo "Issue: $ISSUE"
-          echo "ISSUE=${ISSUE}" >> $GITHUB_OUTPUT
+            ISSUE=$(curl -L \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{ secrets.REPO_SECRET }}" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
+            )
+            echo "Issue: $ISSUE"
+            # Ensure the JSON output is valid before setting it
+            echo "ISSUE=$(echo $ISSUE | jq -r .)" >> $GITHUB_ENV
