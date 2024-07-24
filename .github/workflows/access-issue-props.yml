@@ -5,7 +5,6 @@ on:
     types: [opened]
     branches:
       - main
-  # manual trigger
   workflow_dispatch:
 
 jobs:
@@ -68,7 +67,6 @@ jobs:
                 const prNumber = context.issue.number;
                 const details = JSON.parse(process.env.RESULT);
                 
-                # Add labels
                 if (details.labels.length > 0) {
                     await github.rest.issues.addLabels({
                     owner: context.repo.owner,
@@ -78,7 +76,6 @@ jobs:
                     });
                 }
 
-                # Add assignees
                 if (details.assignees.length > 0) {
                     await github.rest.issues.addAssignees({
                     owner: context.repo.owner,
@@ -88,7 +85,6 @@ jobs:
                     });
                 }
 
-                # Add milestone
                 if (details.milestone != null) {
                     await github.rest.issues.update({
                     owner: context.repo.owner,
