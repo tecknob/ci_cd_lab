@@ -38,4 +38,3 @@ jobs:
       - name: Dump ISSUE_DATA
         if: steps.issue.outputs.ISSUE_DATA
         run: echo '${{ steps.issue.outputs.ISSUE_DATA }}' | jq 
-        
