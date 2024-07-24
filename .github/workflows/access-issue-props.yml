@@ -36,5 +36,4 @@ jobs:
           echo "ISSUE_DATA=${Issue}" >> $GITHUB_OUTPUT
 
       - name: Dump ISSUE_DATA
-        if: steps.issue.outputs.ISSUE_DATA
         run: echo '${{ steps.issue.outputs.ISSUE_DATA }}' | jq 
