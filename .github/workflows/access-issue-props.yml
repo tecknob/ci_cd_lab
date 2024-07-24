@@ -45,7 +45,6 @@ jobs:
             github-token: ${{ secrets.REPO_SECRET }}
             script: |
                 const issue = JSON.parse(process.env.ISSUE);
-
                 const labels = issue.labels ? issue.labels.map(label => label.name) : [];
                 const assignees = issue.assignees ? issue.assignees.map(assignee => assignee.login) : [];
                 const milestone = issue.milestone ? issue.milestone.number : null;
@@ -59,12 +58,13 @@ jobs:
       - name: Apply labels to pull request
         if: steps.process-issue.outcome == 'success'
         uses: actions/github-script@v7
+        env:
+            RESULT: ${{ steps.process-issue.outputs.result }}
         with:
             github-token: ${{ secrets.REPO_SECRET }}
             script: |
                 const prNumber = context.issue.number;
-                const details = JSON.parse(`"${{ steps.process-issue.outputs.result}}"`);
+                const details = JSON.parse(process.env.RESULT);
                 
                 console.log('prNumber: ', prNumber);
                 console.log('details: ', details);
-
