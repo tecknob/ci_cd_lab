@@ -48,7 +48,7 @@ jobs:
 
                 const labels = issue.labels ? issue.labels.map(label => label.name) : [];
                 const assignees = issue.assignees ? issue.assignees.map(assignee => assignee.login) : [];
-                const milestone = issue.milestone ? issue.milestone.title : null;
+                const milestone = issue.milestone ? issue.milestone.number : null;
 
                 return {
                     labels: labels,
@@ -68,7 +68,7 @@ jobs:
                 const prNumber = context.issue.number;
                 const details = JSON.parse(process.env.RESULT);
                 
-                # Add labels
+                // Add labels
                 if (details.labels.length > 0) {
                     await github.rest.issues.addLabels({
                     owner: context.repo.owner,
@@ -78,7 +78,7 @@ jobs:
                     });
                 }
 
-                # Add assignees
+                // Add assignees
                 if (details.assignees.length > 0) {
                     await github.rest.issues.addAssignees({
                     owner: context.repo.owner,
@@ -88,7 +88,7 @@ jobs:
                     });
                 }
 
-                # Add milestone
+                // Add milestone
                 if (details.milestone != null) {
                     await github.rest.issues.update({
                     owner: context.repo.owner,
