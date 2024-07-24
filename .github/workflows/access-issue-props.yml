@@ -40,5 +40,18 @@ jobs:
             github-token: ${{ secrets.REPO_SECRET }}
             script: |
                 const issue = JSON.parse(process.env.ISSUE);
-                console.log(issue);
 
+                const labels = issue.labels ? issue.labels.map(label => label.name) : [];
+                const assignees = issue.assignees ? issue.assignees.map(assignee => assignee.login) : [];
+                const milestone = issue.milestone ? issue.milestone.number : null;
+
+                return {
+                    labels: labels,
+                    assignees: assignees,
+                    milestone: milestone
+                };
+
+      - name: Dump issue details
+        run: |
+          echo "Dumped issue details: ${{ toJSON(steps.process-issue) }}"
+          echo "Dumped issue details.outputs: ${{ toJSON(steps.process-issue.outputs) }}"
