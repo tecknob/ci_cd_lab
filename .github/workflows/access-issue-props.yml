@@ -32,4 +32,4 @@ jobs:
             )
             echo "Issue: $ISSUE"
             # Ensure the JSON output is valid before setting it
-            echo "ISSUE=$(echo $ISSUE | jq -r .)" >> $GITHUB_ENV
+            echo "ISSUE=$(echo $ISSUE | jq -c .)" >> $GITHUB_ENV
