@@ -36,7 +36,7 @@ jobs:
             OWNER: ${{ github.repository_owner }}
             REPO: ${{ github.event.repository.name }}
         run: |
-            ../scripts/get-issue.sh \
+            .github/scripts/get-issue.sh \
                 ${{secrets.REPO_SECRET}} \
                 $OWNER \
                 $REPO \
