@@ -14,10 +14,10 @@ jobs:
         id: set-issue
         run: |
           ISSUE_NUMBER=75          
-          echo "ISSUE_NUMBER=${ISSUE_NUMBER}" >> $GITHUB_OUTPUT
+          echo "ISSUE_NUMBER=${ISSUE_NUMBER}" >> $GITHUB_ENV
 
       - name: Print issue number
-        if: env.ISSUE_NUMBER
+        if: env.ISSUE_NUMBER 
         id: print-issue
         env:
           ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
