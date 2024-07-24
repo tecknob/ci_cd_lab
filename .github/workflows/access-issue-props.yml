@@ -24,7 +24,6 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
         run: |
-
           ISSUE=$(
            curl -L \
             -H "Accept: application/vnd.github+json" \
@@ -33,7 +32,7 @@ jobs:
             https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
           )
           
-          echo "data=$ISSUE" >> $GITHUB_OUTPUT
+          echo "data=${ISSUE}" >> $GITHUB_OUTPUT
 
       - name: Dump issue data
         run: |
