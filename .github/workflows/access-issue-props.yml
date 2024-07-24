@@ -42,3 +42,4 @@ jobs:
           echo "Issue labels: ${{ steps.issue.outputs.labels }}"
           echo "Issue assignees: ${{ steps.issue.outputs.assignees }}"
           echo "Issue milestone: ${{ steps.issue.outputs.milestone }}"
+
