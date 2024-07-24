@@ -45,7 +45,6 @@ jobs:
             github-token: ${{ secrets.REPO_SECRET }}
             script: |
                 const issue = JSON.parse(process.env.ISSUE);
-
                 const labels = issue.labels ? issue.labels.map(label => label.name) : [];
                 const assignees = issue.assignees ? issue.assignees.map(assignee => assignee.login) : [];
                 const milestone = issue.milestone ? issue.milestone.number : null;
