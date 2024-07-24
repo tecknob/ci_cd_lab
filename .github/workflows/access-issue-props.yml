@@ -21,6 +21,7 @@ jobs:
         id: issue
         env:
           ISSUE_NUMBER: ${{ env.ISSUE_NUMBER }}
+          GH_TOKEN: ${{ secrets.REPO_SECRET }}
         run: |
           echo "Issue number: $ISSUE_NUMBER"
           issue=$(gh issue view $ISSUE_NUMBER --json number,title,body,labels,assignees,milestone)
