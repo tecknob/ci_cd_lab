@@ -57,6 +57,7 @@ jobs:
                 };
 
       - name: Apply labels, assignees and milestone to pull request
+
         if: steps.process-issue.outcome == 'success'
         uses: actions/github-script@v7
         env:
@@ -96,3 +97,4 @@ jobs:
                     milestone: details.milestone
                     });
                 }
+
