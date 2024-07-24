@@ -67,3 +67,4 @@ jobs:
                 
                 console.log('prNumber: ', prNumber);
                 console.log('details: ', details);
+
