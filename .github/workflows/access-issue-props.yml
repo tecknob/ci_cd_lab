@@ -24,7 +24,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
         run: |
-          Issue=$(
+          ISSUE=$(
            curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.REPO_SECRET}}" \
@@ -32,13 +32,8 @@ jobs:
             https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
           )
           
-          echo "::set-output name=issue::$Issue"
+          echo "data=$ISSUE" >> $GITHUB_OUTPUT
 
-      - name: Print issue details
+      - name: Dump issue data
         run: |
-          echo "Issue number: ${{ steps.issue.outputs.number }}"
-          echo "Issue title: ${{ steps.issue.outputs.title }}"
-          echo "Issue body: ${{ steps.issue.outputs.body }}"
-          echo "Issue labels: ${{ steps.issue.outputs.labels }}"
-          echo "Issue assignees: ${{ steps.issue.outputs.assignees }}"
-          echo "Issue milestone: ${{ steps.issue.outputs.milestone }}"
+          echo "Issue data: ${{ steps.issue.outputs.data }}"
