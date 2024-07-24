@@ -17,10 +17,10 @@ jobs:
         run: ls -l
 
       - name: List files in scripts directory
-        run: ls -l ../scripts
+        run: ls -l .github/scripts
 
       - name: Make script executable
-        run: chmod +x ../scripts/get-issue.sh
+        run: chmod +x .github/scripts/get-issue.sh
 
       - name: Set issue number
         id: set-issue-number
