@@ -32,8 +32,11 @@ jobs:
             https://api.github.com/repos/$OWNER/$REPO/issues/$ISSUE_NUMBER
           )
           
-          # Set issue as output
+          echo "ISSUE_DATA=${Issue}" >> $GITHUB_ENV
           echo "ISSUE_DATA=${Issue}" >> $GITHUB_OUTPUT
 
       - name: Dump ISSUE_DATA
-        run: echo '${{ steps.issue.outputs.ISSUE_DATA }}' | jq 
+        if: env.ISSUE_DATA
+        env:
+          ISSUE_DATA: ${{ env.ISSUE_DATA }}
+        run: echo $ISSUE_DATA | jq 
