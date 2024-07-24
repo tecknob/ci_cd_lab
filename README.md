@@ -9,3 +9,5 @@
 
 # CI/CD Lab
 This repository is dedicated to learning and mastering Continuous Integration (CI) and Continuous Delivery (CD) practices.
+
+## Table of Contents
