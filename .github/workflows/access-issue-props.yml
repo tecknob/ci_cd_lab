@@ -26,3 +26,12 @@ jobs:
           echo "Issue number: $ISSUE_NUMBER"
           issue=$(gh issue view $ISSUE_NUMBER --json number,title,body,labels,assignees,milestone)
           echo "Issue: $issue"
+
+          # Set outputs
+          echo "issue_number=${ISSUE_NUMBER}" >> $GITHUB_OUTPUT
+          echo "labels=$(echo $issue | jq -r '.labels | map(.name) | join(",")')" >> $GITHUB_OUTPUT
+
+      - name: Print outputs
+        run: |
+          echo "Issue number: ${{ steps.issue.outputs.issue_number }}"
+          echo "Labels: ${{ steps.issue.outputs.labels }}"
