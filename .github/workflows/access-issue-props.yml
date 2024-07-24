@@ -53,5 +53,4 @@ jobs:
             script: |
                 const issue = JSON.parse(process.env.ISSUE);
                 console.log(issue);
-            
-     
+
