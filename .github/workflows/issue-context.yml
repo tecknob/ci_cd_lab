@@ -1,0 +1,16 @@
+name: Check Issue Context When Opened
+
+on:
+    issues:
+        types: [opened]
+
+
+jobs:
+    check-issue-context:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check issue context
+              run: echo '${{ toJSON(github) }}' | jq
+
+            - name: Check event context
+              run: echo '${{ toJSON(github.event) }}' | jq
