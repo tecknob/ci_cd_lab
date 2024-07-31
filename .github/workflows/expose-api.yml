@@ -16,7 +16,8 @@ jobs:
               with:
                 github-token: ${{ secrets.REPO_SECRET }}
                 script: |
-                  const outputter = require("../scripts/expose-api.js");
-
-                  outputter("Hello World to outputter");
-        
+                  const path = require('path');
+                  const fs = require('fs');
+                  // require expose-api.js from scripts folder
+                  const exposeApi = require(path.join(__dirname, 'scripts', 'expose-api.js'));
+                  exposeApi('Helleee World!');
