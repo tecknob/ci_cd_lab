@@ -10,6 +10,6 @@ jobs:
         steps:
             - name: Expose GitHub GraphQL API
               run: |
-                  echo "${{ toJSON(github) }}" | jq
+                  echo "${{ toJson(github) }}" | jq
 
         
