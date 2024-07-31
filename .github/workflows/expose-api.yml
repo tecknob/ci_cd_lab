@@ -8,16 +8,5 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: Get Token
-            id: get_workflow_token
-            uses: peter-murray/workflow-application-token-action@v3
-            with:
-              application_id: ${{ vars.APP_ID }}
-              application_private_key: ${{ secrets.TECKNOB_APP }}
-    
-          - name: Move PR to Review
-            uses: actions/github-script@v7
-            with:
-              github-token: ${{ steps.get_workflow_token.outputs.token }}
-              script: |
-                console.log("GITHUB_TOKEN: ", process.env.GITHUB_TOKEN);
+            run: echo "Hello"
 
