@@ -9,7 +9,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Expose GitHub GraphQL API
-              run: |
-                  echo "${{ toJson(github) }}" | jq
+              run: echo '${{ toJSON(github) }}' | jq
 
         
