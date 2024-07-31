@@ -8,7 +8,14 @@ jobs:
     expose-api:
         runs-on: ubuntu-latest
         steps:
-            - name: Expose GitHub GraphQL API
+            - name: GitHub Context
               run: echo '${{ toJSON(github) }}' | jq
+
+            - name: GitHub Script Testing
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ secrets.REPO_SECRET }}
+                script: |
+                  console.log(JSON.stringify(github));
 
         
