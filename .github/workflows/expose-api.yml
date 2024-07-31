@@ -17,15 +17,16 @@ jobs:
     
           - name: Move PR to Review
             uses: actions/github-script@v7
-            env:
-              GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+            # env:
+            #   GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
             with:
               github-token: ${{ steps.get_workflow_token.outputs.token }}
               script: |
-                fetch("https://api.github.com/graphql", {
-                  headers: {
-                    "Authorization": `Token ${process.env.GITHUB_TOKEN}`,
-                  },
-                }).then(res => res.json()).then(res => {
-                  console.log(res);
-                });
+                console.log("GITHUB_TOKEN: ", process.env.GITHUB_TOKEN);
+                # fetch("https://api.github.com/graphql", {
+                #   headers: {
+                #     "Authorization": `Token ${process.env.GITHUB_TOKEN}`,
+                #   },
+                # }).then(res => res.json()).then(res => {
+                #   console.log(res);
+                # });
