@@ -8,17 +8,24 @@ jobs:
     expose-api:
         runs-on: ubuntu-latest
         steps:
-            - name: GitHub Context
-              run: echo '${{ toJSON(github) }}' | jq
-
-            - name: Expose API
-              run: |
-               graphql_api=$(curl -L \
-                -H "Authorization: Bearer ${{ secrets.REPO_SECRET }}" \
-                -H "Content-Type: application/json" \
-                -X POST \
-                -d '{"query": "query { repository(name: \"ci_cd_lab\", owner: \"tecknob\") { name } }"}' \
-                https://api.github.com/graphql \
-               )
-
-               echo "API: $graphql_api"
+          - name: Get Token
+            id: get_workflow_token
+            uses: peter-murray/workflow-application-token-action@v3
+            with:
+              application_id: ${{ vars.APP_ID }}
+              application_private_key: ${{ secrets.TECKNOB_APP }}
+    
+          - name: Move PR to Review
+            uses: actions/github-script@v7
+            env:
+              GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+            with:
+              github-token: ${{ steps.get_workflow_token.outputs.token }}
+              script: |
+                fetch("https://api.github.com/graphql", {
+                  headers: {
+                    "Authorization": `Token ${process.env.GITHUB_TOKEN}`,
+                  },
+                }).then(res => res.json()).then(res => {
+                  console.log(res);
+                });

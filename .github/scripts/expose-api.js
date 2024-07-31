@@ -1,7 +1,11 @@
-console.log("Exposing API");
-
-const outputter = (input) => {
-	console.log(input);
-};
-
-module.exports = outputter;
+fetch("https://api.github.com/graphql", {
+	method: "GET",
+	headers: {
+		"Content-Type": "application/json",
+		Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+	},
+})
+	.then((res) => res.json())
+	.then((json) => {
+		console.log(json);
+	});
