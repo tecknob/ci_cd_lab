@@ -17,7 +17,7 @@ jobs:
                 -H "Authorization: Bearer ${{ secrets.REPO_SECRET }}" \
                 -H "Content-Type: application/json" \
                 -X POST \
-                -d '{"query": "query { repository(name: \"tecknob\", owner: \"taslim-a-hussain\") { name } }"}' \
+                -d '{"query": "query { repository(name: \"ci_cd_lab\", owner: \"tecknob\") { name } }"}' \
                 https://api.github.com/graphql \
                )
 
