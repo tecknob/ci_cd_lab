@@ -11,9 +11,14 @@ jobs:
             - name: GitHub Context
               run: echo '${{ toJSON(github) }}' | jq
 
-            - name: GitHub Script Testing
-              uses: actions/github-script@v7
-              with:
-                github-token: ${{ secrets.REPO_SECRET }}
-                script: |
-                    console.log(process.env.GITHUB_WORKSPACE);
+            - name: Expose API
+              run: |
+               graphql_api=$(curl -L \
+                -H "Authorization: Bearer ${{ secrets.REPO_SECRET }}" \
+                -H "Content-Type: application/json" \
+                -X POST \
+                -d '{"query": "query { repository(name: \"tecknob\", owner: \"taslim-a-hussain\") { name } }"}' \
+                https://api.github.com/graphql \
+               )
+
+               echo "API: $graphql_api"
