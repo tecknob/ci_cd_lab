@@ -16,7 +16,7 @@ jobs:
               with:
                 github-token: ${{ secrets.REPO_SECRET }}
                 script: |
-                  const outputter = require(".github/scripts/expose-api.js");
+                  const outputter = require("../scripts/expose-api.js");
 
                   outputter("Hello World to outputter");
         
