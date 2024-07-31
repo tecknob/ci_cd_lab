@@ -1,0 +1,15 @@
+name: Expose API
+
+on:
+    workflow_dispatch:
+
+
+jobs:
+    expose-api:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Expose GitHub GraphQL API
+              run: |
+                  echo "${{ toJSON(github) }}" | jq
+
+        
