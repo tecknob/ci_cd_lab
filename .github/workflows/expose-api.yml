@@ -16,7 +16,7 @@ jobs:
               with:
                 github-token: ${{ secrets.REPO_SECRET }}
                 script: |
-                  import { outputter } from ".github/scripts/expose-api.js";
+                  const outputter = require(".github/scripts/expose-api.js");
 
                   outputter("Hello World to outputter");
         
