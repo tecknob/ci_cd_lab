@@ -19,5 +19,5 @@ jobs:
                   const path = require('path');
                   const fs = require('fs');
                   // require expose-api.js from scripts folder
-                  const exposeApi = require(path.join(process.env.GITHUB_WORKSPACE, 'scripts', 'expose-api.js'));
+                  const exposeApi = require(path.join(process.env.GITHUB_WORKSPACE, '.github/scripts', 'expose-api.js'));
                   exposeApi('Helleee World!');
