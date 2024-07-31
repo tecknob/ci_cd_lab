@@ -1,5 +1,7 @@
 console.log("Exposing API");
 
-export const outputter = (input) => {
+const outputter = (input) => {
 	console.log(input);
 };
+
+module.exports = outputter;
